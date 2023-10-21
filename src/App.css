@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding: 50px 33vw;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.todo-list > h1 {
+  margin-bottom: 5px;
+}
+
+.todo-list > .add-task {
+  margin-bottom: 5px;
+}
+
+.add-task > form {
+  display: flex;
+  max-width: 34vw;
+}
+
+.add-task > form > input[type="text"] {
+  width: 20vw;
+  margin-right: 3px;
+}
+
+.task-list > div {
+  display: flex;
+  align-items: baseline;
+}
+
+.task-list > div > input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.task-list > div > p {
+  margin-right: 2px;
+}
+
+.task-list > div[taskcompletionstatus="true"] > p {
+  text-decoration: line-through;
+  text-decoration-thickness: 3px;
+}
+
+.task-list > div > button {
+  color: #f00 !important;
+  font-size: 10px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  top: -2px;
+}
+
+.fade-out-anim-300s {
+  animation-name: fade-out;
+  animation-duration: 300ms;
+  animation-iteration-count: 1;
+}
+
+.fade-in-anim-300s {
+  animation-name: fade-in;
+  animation-duration: 300ms;
+  animation-iteration-count: 1;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

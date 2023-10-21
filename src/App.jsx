@@ -1,60 +1,115 @@
-import { useState } from "react"
-import "./styles.css"
+import { useState } from "react";
+import "./App.css";
+import "bootswatch/dist/lumen/bootstrap.min.css";
+
+const AddTask = ({ handleAddTask }) => {
+  return (
+    <div className="add-task">
+      <label htmlFor="addTask">Add task:</label>
+      <br />
+      <form onSubmit={handleAddTask}>
+        <input id="addTask" type="text" class="form-control" />
+        <input type="submit" value="Add" className="btn btn-secondary" />
+      </form>
+    </div>
+  );
+};
+
+const TaskList = ({ tasks, handleTaskComplete, handleDelete }) => {
+  return (
+    <div className="task-list">
+      {tasks.map((task) => (
+        <div
+          key={task.id}
+          taskid={task.id}
+          taskcompletionstatus={`${task.completed}`}
+        >
+          <input
+            className="form-check-input"
+            type="checkbox"
+            onChange={handleTaskComplete}
+          />
+          <p>{task.name}</p>
+          <button className="btn btn-secondary" onClick={handleDelete}>
+            ✖
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const uuidv4 = () => {
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+    (
+      c ^
+      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+    ).toString(16)
+  );
+};
 
 export default function App() {
-  const [newItem, setNewItem] = useState("")
-  const [todos, setTodos] = useState([])
+  const [tasks, setTasks] = useState([]);
 
-  function handleSubmit(e) {
-    e.preventDefault()
+  const handleAddTask = (e) => {
+    e.preventDefault();
 
-    setTodos(currentTodos => {
-      return[
-        ...currentTodos,
-        { id: crypto.randomUUID(), title: newItem, completed: false },
-      ]
-    })
+    const name = e.currentTarget.addTask.value;
+    if (name.length === 0) return;
+    setTasks((prev) => {
+      return [...prev, { id: uuidv4(), name, completed: false }];
+    });
 
-    setNewItem("")
-  }
+    e.currentTarget.addTask.value = "";
+  };
 
-  console.log(todos)
+  const handleTaskComplete = (e) => {
+    const id = e.target.parentElement.getAttribute("taskid");
+    let task = tasks.filter((task) => task.id === id);
+    task = task[0];
+    const taskIndex = tasks.findIndex((task) => task.id === id);
 
-  function toggleTodo(id, completed) {
-    setTodos(currentTodos => {
-      return currentTodos.map(todo => {
-        if (todo.id === id) {
-          return { ...todo, completed }
-        }
+    const isChecked = e.target.checked;
 
-        return todo
-      })
-    })
-  }
+    if (isChecked === true) {
+      e.target.parentElement.classList.add("fade-out-anim-300s");
+      setTimeout(() => {
+        e.target.parentElement.classList.remove("fade-out-anim-300s");
+        setTasks(tasks.filter((task) => task.id !== id));
+        setTasks((prev) => {
+          return [
+            ...prev,
+            {
+              id: task.id,
+              name: task.name,
+              completed: isChecked,
+            },
+          ];
+        });
+      }, 300);
+    }
+
+    e.target.parentElement.setAttribute("taskcompletionstatus", isChecked);
+  };
+
+  const handleDelete = (e) => {
+    const id = e.target.parentElement.getAttribute("taskid");
+    e.target.parentElement.classList.add("fade-out-anim-300s");
+    setTimeout(() => {
+      setTasks(tasks.filter((task) => task.id !== id));
+    }, 300);
+  };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="new-item-form">
-        <div className="form-row">
-          <label htmlFor="item">New Item</label>
-          <input value={newItem} onChange={e => setNewItem(e.target.value)} type="text" id="item" />
-        </div>
-        <button className="btn">Add</button>
-      </form>
-      <h1 className="header">Todo List</h1>
-      <ul className="list">
-        {todos.map(todo => {
-            return (
-              <li key={todo.id}>
-                <label>
-                  <input type="checkbox" checked={todo.completed} onChange={e => toggleTodo(todo.id, e.target.checked)} />
-                  {todo.title}
-                </label>
-                <button className="btn btn-danger">Delete</button>
-              </li>
-            )
-        })}
-      </ul>
-    </>
-  )
+    <div className="todo-list">
+      <h1>Todo List</h1>
+      <AddTask handleAddTask={handleAddTask} />
+      <TaskList
+        tasks={tasks}
+        setTasks={setTasks}
+        handleTaskComplete={handleTaskComplete}
+        handleDelete={handleDelete}
+      />
+    </div>
+  );
 }
