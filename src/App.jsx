@@ -72,9 +72,9 @@ export default function App() {
     const isChecked = e.target.checked;
 
     if (isChecked === true) {
+      e.target.parentElement.classList.remove("fade-in-anim-300s");
       e.target.parentElement.classList.add("fade-out-anim-300s");
       setTimeout(() => {
-        e.target.parentElement.classList.remove("fade-out-anim-300s");
         setTasks(tasks.filter((task) => task.id !== id));
         setTasks((prev) => {
           return [
@@ -86,6 +86,8 @@ export default function App() {
             },
           ];
         });
+        e.target.parentElement.classList.remove("fade-out-anim-300s");
+        e.target.parentElement.classList.add("fade-in-anim-300s");
       }, 300);
     }
 
