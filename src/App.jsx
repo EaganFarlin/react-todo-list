@@ -73,10 +73,6 @@ export default function App() {
 
     const isChecked = e.target.checked;
 
-    // var chimeSound = new Audio("sounds/chime-sound.mp3");
-    // // chimeSound.volume = 0.5;
-    // chimeSound.play();
-
     setTimeout(() => {
       setTasks(tasks.filter((task) => task.id !== id));
       setTasks((prev) => {
@@ -105,6 +101,13 @@ export default function App() {
         taskEl.classList.remove("fade-out-anim-300s");
         taskEl.classList.add("fade-in-anim-300s");
       });
+    }
+
+    // Task completion sound FX
+    if (isChecked === true) {
+      var chimeSound = new Audio("/src/sounds/chime-sound.mp3");
+      chimeSound.volume = 0.5;
+      chimeSound.play();
     }
 
     taskEl.setAttribute("taskcompletionstatus", isChecked);
