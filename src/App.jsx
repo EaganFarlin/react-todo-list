@@ -15,7 +15,7 @@ const AddTask = ({ handleAddTask }) => {
   );
 };
 
-const TaskList = ({ tasks, handleTaskComplete, handleDelete }) => {
+const TaskList = ({ tasks, handleTaskStatus, handleDelete }) => {
   return (
     <div className="task-list">
       {tasks.map((task) => (
@@ -27,7 +27,7 @@ const TaskList = ({ tasks, handleTaskComplete, handleDelete }) => {
           <input
             className="form-check-input"
             type="checkbox"
-            onChange={handleTaskComplete}
+            onChange={handleTaskStatus}
           />
           <p>{task.name}</p>
           <button className="btn btn-secondary" onClick={handleDelete}>
@@ -57,45 +57,62 @@ export default function App() {
     const name = e.currentTarget.addTask.value;
     if (name.length === 0) return;
     setTasks((prev) => {
-      return [...prev, { id: uuidv4(), name, completed: false }];
+      return [...prev, { id: uuidv4(), name, completed: false }].sort((a, b) =>
+        a.completed.toString().localeCompare(b.completed.toString())
+      );
     });
 
     e.currentTarget.addTask.value = "";
   };
 
-  const handleTaskComplete = (e) => {
+  const handleTaskStatus = (e) => {
     const id = e.target.parentElement.getAttribute("taskid");
-    let task = tasks.filter((task) => task.id === id);
-    task = task[0];
+    const task = tasks.filter((task) => task.id === id)[0];
+    const taskEl = e.target.parentElement;
     const taskIndex = tasks.findIndex((task) => task.id === id);
 
     const isChecked = e.target.checked;
 
-    if (isChecked === true) {
-      e.target.parentElement.classList.remove("fade-in-anim-300s");
-      e.target.parentElement.classList.add("fade-out-anim-300s");
+    // var chimeSound = new Audio("sounds/chime-sound.mp3");
+    // // chimeSound.volume = 0.5;
+    // chimeSound.play();
+
+    setTimeout(() => {
+      setTasks(tasks.filter((task) => task.id !== id));
+      setTasks((prev) => {
+        return [
+          ...prev,
+          {
+            id: task.id,
+            name: task.name,
+            completed: !task.completed,
+          },
+        ].sort((a, b) =>
+          a.completed.toString().localeCompare(b.completed.toString())
+        );
+      });
+    }, 300);
+
+    if (
+      taskIndex < tasks.length - 1
+        ? tasks[taskIndex + 1].completed === false
+        : false
+    ) {
+      taskEl.classList.remove("fade-in-anim-300s");
+      taskEl.classList.add("fade-out-anim-300s");
+
       setTimeout(() => {
-        setTasks(tasks.filter((task) => task.id !== id));
-        setTasks((prev) => {
-          return [
-            ...prev,
-            {
-              id: task.id,
-              name: task.name,
-              completed: isChecked,
-            },
-          ];
-        });
-        e.target.parentElement.classList.remove("fade-out-anim-300s");
-        e.target.parentElement.classList.add("fade-in-anim-300s");
-      }, 300);
+        taskEl.classList.remove("fade-out-anim-300s");
+        taskEl.classList.add("fade-in-anim-300s");
+      });
     }
 
-    e.target.parentElement.setAttribute("taskcompletionstatus", isChecked);
+    taskEl.setAttribute("taskcompletionstatus", isChecked);
   };
 
   const handleDelete = (e) => {
     const id = e.target.parentElement.getAttribute("taskid");
+    e.target.parentElement.classList.remove("fade-in-anim-300s");
     e.target.parentElement.classList.add("fade-out-anim-300s");
     setTimeout(() => {
       setTasks(tasks.filter((task) => task.id !== id));
@@ -109,7 +126,7 @@ export default function App() {
       <TaskList
         tasks={tasks}
         setTasks={setTasks}
-        handleTaskComplete={handleTaskComplete}
+        handleTaskStatus={handleTaskStatus}
         handleDelete={handleDelete}
       />
     </div>

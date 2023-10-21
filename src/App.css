@@ -62,20 +62,24 @@ body {
   animation-name: fade-out;
   animation-duration: 300ms;
   animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 .fade-in-anim-300s {
   animation-name: fade-in;
   animation-duration: 300ms;
   animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
 @keyframes fade-out {
   0% {
     opacity: 1;
+    height: inherit;
   }
   100% {
     opacity: 0;
+    height: 0;
   }
 }
 
