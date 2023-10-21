@@ -73,6 +73,8 @@ export default function App() {
 
     const isChecked = e.target.checked;
 
+    const chimeSound = new Audio("/src/sounds/chime-sound.mp3");
+
     setTimeout(() => {
       setTasks(tasks.filter((task) => task.id !== id));
       setTasks((prev) => {
@@ -105,7 +107,6 @@ export default function App() {
 
     // Task completion sound FX
     if (isChecked === true) {
-      var chimeSound = new Audio("/src/sounds/chime-sound.mp3");
       chimeSound.volume = 0.5;
       chimeSound.play();
     }
