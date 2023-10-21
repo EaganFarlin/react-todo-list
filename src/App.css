@@ -80,6 +80,7 @@ body {
   100% {
     opacity: 0;
     height: 0;
+    transform: scaleY(0);
   }
 }
 

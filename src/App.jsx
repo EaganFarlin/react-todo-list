@@ -1,6 +1,10 @@
 import { useState } from "react";
 import "./App.css";
 import "bootswatch/dist/lumen/bootstrap.min.css";
+import { chimeSFX } from "./index.js";
+import { v4 as uuidv4 } from "uuid";
+
+chimeSFX.volume = 0.5;
 
 const AddTask = ({ handleAddTask }) => {
   return (
@@ -39,15 +43,6 @@ const TaskList = ({ tasks, handleTaskStatus, handleDelete }) => {
   );
 };
 
-const uuidv4 = () => {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-    (
-      c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-    ).toString(16)
-  );
-};
-
 export default function App() {
   const [tasks, setTasks] = useState([]);
 
@@ -73,8 +68,6 @@ export default function App() {
 
     const isChecked = e.target.checked;
 
-    const chimeSound = new Audio("/src/sounds/chime-sound.mp3");
-
     setTimeout(() => {
       setTasks(tasks.filter((task) => task.id !== id));
       setTasks((prev) => {
@@ -92,9 +85,8 @@ export default function App() {
     }, 300);
 
     if (
-      taskIndex < tasks.length - 1
-        ? tasks[taskIndex + 1].completed === false
-        : false
+      taskIndex < tasks.length - 1 &&
+      tasks[taskIndex + 1].completed === false
     ) {
       taskEl.classList.remove("fade-in-anim-300s");
       taskEl.classList.add("fade-out-anim-300s");
@@ -102,13 +94,14 @@ export default function App() {
       setTimeout(() => {
         taskEl.classList.remove("fade-out-anim-300s");
         taskEl.classList.add("fade-in-anim-300s");
-      });
+      }, 300);
     }
 
     // Task completion sound FX
     if (isChecked === true) {
-      chimeSound.volume = 0.5;
-      chimeSound.play();
+      myAudioElement.addEventListener("canplaythrough", (event) => {
+        chimeSFX.play();
+      });
     }
 
     taskEl.setAttribute("taskcompletionstatus", isChecked);
