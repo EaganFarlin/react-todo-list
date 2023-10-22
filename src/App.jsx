@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./App.css";
 import "bootswatch/dist/lumen/bootstrap.min.css";
-import { chimeSFX } from "./index.js";
 import { v4 as uuidv4 } from "uuid";
 
+const chimeSFX = new Audio("/src/assets/sounds/chime-sound.mp3");
 chimeSFX.volume = 0.5;
 
 const AddTask = ({ handleAddTask }) => {
@@ -12,7 +12,7 @@ const AddTask = ({ handleAddTask }) => {
       <label htmlFor="addTask">Add task:</label>
       <br />
       <form onSubmit={handleAddTask}>
-        <input id="addTask" type="text" class="form-control" />
+        <input id="addTask" type="text" className="form-control" />
         <input type="submit" value="Add" className="btn btn-secondary" />
       </form>
     </div>
@@ -50,13 +50,16 @@ export default function App() {
     e.preventDefault();
 
     const name = e.currentTarget.addTask.value;
-    if (name.length === 0) return;
+    if (name.replace(/ /g, "").length === 0) {
+      e.currentTarget.addTask.value = "";
+      return;
+    }
+
     setTasks((prev) => {
       return [...prev, { id: uuidv4(), name, completed: false }].sort((a, b) =>
         a.completed.toString().localeCompare(b.completed.toString())
       );
     });
-
     e.currentTarget.addTask.value = "";
   };
 
@@ -99,12 +102,11 @@ export default function App() {
 
     // Task completion sound FX
     if (isChecked === true) {
-      myAudioElement.addEventListener("canplaythrough", (event) => {
-        chimeSFX.play();
-      });
+      // chimeSFX.load();
+      chimeSFX.play();
     }
 
-    taskEl.setAttribute("taskcompletionstatus", isChecked);
+    taskEl.setAttribute("taskcompletionstatus", e.target.checked);
   };
 
   const handleDelete = (e) => {
