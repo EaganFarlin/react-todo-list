@@ -3,7 +3,7 @@ import "./App.css";
 import "bootswatch/dist/lumen/bootstrap.min.css";
 import { v4 as uuidv4 } from "uuid";
 
-const chimeSFX = new Audio("/src/assets/sounds/chime-sound.mp3");
+const chimeSFX = new Audio("/sounds/chime-sound.mp3");
 chimeSFX.volume = 0.5;
 
 const AddTask = ({ handleAddTask }) => {
@@ -102,7 +102,7 @@ export default function App() {
 
     // Task completion sound FX
     if (isChecked === true) {
-      // chimeSFX.load();
+      chimeSFX.load();
       chimeSFX.play();
     }
 
